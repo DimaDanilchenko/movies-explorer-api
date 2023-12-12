@@ -10,7 +10,7 @@ router.get('/me', getProfile);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    email: Joi.string().trim().email().required(),
   }),
 }), updateProfile);
 
