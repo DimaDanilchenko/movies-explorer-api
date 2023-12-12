@@ -5,10 +5,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 
+// eslint-disable-next-line no-unused-vars
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.login = (req, res, next) => {
-  const { email, password } = req.body;
+  // eslint-disable-next-line no-unused-vars
+  const { email } = req.body;
 
   return User.findOne({ email }).select('+password')
     .then((user) => {
@@ -17,24 +19,6 @@ module.exports.login = (req, res, next) => {
 
       // вернём токен
       res.send({ token });
-    })
-    .catch(next);
-};
-
-module.exports.getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
-};
-
-module.exports.getUsersId = (req, res, next) => {
-  const userId = req.params;
-  User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Нет пользователя с таким id');
-      }
-      res.send({ data: user });
     })
     .catch(next);
 };
@@ -84,13 +68,3 @@ module.exports.updateProfile = (req, res, next) => {
       }
     });
 };
-
-module.exports.updateAvatar = (req, res) => {
-  const { avatar } = req.body;
-  const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
-    .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
-};
-
-

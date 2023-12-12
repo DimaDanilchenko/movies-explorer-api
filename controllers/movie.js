@@ -1,7 +1,6 @@
 const Card = require('../models/movie');
-const NotFoundError = require('../errors/NotFoundError');
 
-module.exports.createCard = (req, res, next) => {
+module.exports.createMovie = (req, res, next) => {
   const { name, link } = req.body;
   const ownerId = req.user._id;
   Card.create({ name, link, owner: ownerId })
@@ -19,12 +18,12 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-module.exports.getCards = (req, res) => {
+module.exports.getMovies = (req, res) => {
   Card.find({})
-    .then((cards) => res.send(cards))
+    .then((movies) => res.send(movies))
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
-module.exports.delCardId = (req, res, next) => {
+module.exports.delMovieId = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((user) => res.send(user))
     .catch((err) => {
@@ -39,4 +38,3 @@ module.exports.delCardId = (req, res, next) => {
       }
     });
 };
-
