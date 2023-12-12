@@ -5,6 +5,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { celebrate, Joi, errors } = require('celebrate');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const helmet = require('helmet');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const limiter = require('limiter');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -12,9 +16,11 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
+mongoose.connect('mongodb://127.0.0.1:27017/filmsdb');
 
 app.use(cors());
+app.use(limiter);
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
