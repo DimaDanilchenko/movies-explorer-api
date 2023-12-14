@@ -11,6 +11,7 @@ const limiter = require('./utils/rateLimit');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const errorRouter = require('./routes/error');
 
 const { PORT = 3000, MONGO_LINK = 'mongodb://127.0.0.1:27017/bitfilmsdb' } = process.env;
 const app = express();
@@ -41,6 +42,8 @@ app.post('/signin', celebrate({
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/movies', auth, require('./routes/movie'));
+
+app.use('*', errorRouter);
 
 app.use(errorLogger);
 app.use(errors());
