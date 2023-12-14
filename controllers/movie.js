@@ -19,21 +19,19 @@ module.exports.createMovie = (req, res, next) => {
     });
 };
 
-module.exports.getMovies = (req, res) => {
+module.exports.getMovies = (req, res, next) => {
   Movie.find({})
     .then((movies) => res.send(movies))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch(next);
 };
 
 module.exports.delMovieId = (req, res, next) => {
   const { filmId } = req.params;
-
   Movie
     .findById(filmId)
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id.toString()) {
-        // eslint-disable-next-line no-undef
-        return next(new ForbiddenError(FILM_FORBIDDEN_DELETE));
+        return next(new ForbiddenError({ message: 'ошибка удаления фильма' }));
       }
       return movie.remove()
         // eslint-disable-next-line no-undef

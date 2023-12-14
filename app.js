@@ -7,16 +7,15 @@ const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const limiter = require('limiter');
+const limiter = require('./utils/rateLimit');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, MONGO_LINK = 'mongodb://127.0.0.1:27017/bitfilmsdb' } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/filmsdb');
+mongoose.connect(MONGO_LINK);
 
 app.use(cors());
 app.use(limiter);
@@ -24,12 +23,6 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
