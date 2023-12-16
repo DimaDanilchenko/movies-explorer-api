@@ -15,4 +15,6 @@
 
 # https://github.com/DimaDanilchenko/movies-explorer-api
 
+К серверу можно обратиться по https:
+
 # https://api.dan-movies.nomoredomainsmonster.ru

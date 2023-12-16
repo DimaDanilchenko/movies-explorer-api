@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
-const ValidationError = require('../errors/ValidationError');
-const InternalServerError = require('../errors/InternalServerError');
+const BadRequestError = require('../errors/BadRequestError');
+const ConflictError = require('../errors/ConflictError');
 
 // eslint-disable-next-line no-unused-vars
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -36,10 +36,10 @@ module.exports.createUser = (req, res, next) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ValidationError({ message: 'переданы некорректные данные пользователя' }));
+        return next(new BadRequestError({ message: 'переданы некорректные данные пользователя' }));
       }
-      if (err.code === 'InternalServerError') {
-        return next(new InternalServerError({ message: 'на сервере произошла ошибка.' }));
+      if (err.code === 11000) {
+        return next(new ConflictError({ message: 'данный пользователь уже существует' }));
       }
       return next(err);
     });
@@ -57,15 +57,18 @@ module.exports.updateProfile = (req, res, next) => {
   const { name, email } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { name, email }, { new: true, runValidators: true })
-    .then((users) => {
-      res.send({ data: users });
+    .then((userData) => {
+      if (!userData) {
+        throw new NotFoundError({ message: 'данный пользователь не найден' });
+      }
+      return res.send(userData);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ValidationError({ message: 'переданы некорректные данные пользователя' }));
+        return next(new BadRequestError({ message: 'переданы некорректные данные пользователя' }));
       }
-      if (err.code === 'InternalServerError') {
-        return next(new InternalServerError({ message: 'на сервере произошла ошибка.' }));
+      if (err.code === 11000) {
+        return next(new ConflictError({ message: 'данный пользователь уже существует' }));
       }
       return next(err);
     });
