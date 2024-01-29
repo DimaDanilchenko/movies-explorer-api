@@ -5,9 +5,9 @@ const {
   updateProfile, getProfile,
 } = require('../controllers/users');
 
-router.get('/me', getProfile);
+router.get('/', getProfile);
 
-router.patch('/me', celebrate({
+router.patch('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     email: Joi.string().trim().email().required(),

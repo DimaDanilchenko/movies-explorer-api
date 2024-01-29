@@ -4,9 +4,25 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.createMovie = (req, res, next) => {
-  const { name, link } = req.body;
-  const ownerId = req.user._id;
-  Movie.create({ name, link, owner: ownerId })
+  const {
+    country, director, duration, year, description, image,
+    trailerLink, thumbnail, movieId, nameRU, nameEN,
+  } = req.body;
+  const owner = req.user._id;
+  Movie.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    owner,
+    movieId,
+    nameRU,
+    nameEN,
+  })
     .then((newMovie) => res.send(newMovie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
