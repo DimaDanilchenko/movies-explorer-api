@@ -5,26 +5,11 @@ const {
   getMovies, createMovie, delMovieId,
 } = require('../controllers/movie');
 
+const createMovieValidation = require('../utils/validation/createMovieValidation');
+
 router.get('/', getMovies);
 
-router.post('/', celebrate({
-  body: Joi.object().keys({
-    country: Joi.string().min(2).max(30).required(),
-    director: Joi.string().min(2).max(30).required(),
-    duration: Joi.number().min(2).required(),
-    year: Joi.string().min(2).max(30).required(),
-    description: Joi.string().required(),
-    image: Joi.string().required()
-      .regex(/^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/),
-    trailerLink: Joi.string().required()
-      .regex(/^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/),
-    nameRU: Joi.string().min(2).max(30).required(),
-    nameEN: Joi.string().min(2).max(30).required(),
-    thumbnail: Joi.string().required()
-      .regex(/^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/),
-    movieId: Joi.number().required(),
-  }),
-}), createMovie);
+router.post('/', createMovieValidation, createMovie);
 
 router.delete('/_id', celebrate({
   params: Joi.object().keys({
