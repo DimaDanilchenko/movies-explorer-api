@@ -40,7 +40,7 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
-app.use('/profile', auth, require('./routes/users'));
+app.use('/users', auth, require('./routes/users'));
 app.use('/movies', auth, require('./routes/movie'));
 
 app.use('*', errorRouter);
