@@ -42,7 +42,7 @@ module.exports.getMovies = (req, res, next) => {
 module.exports.delMovieId = (req, res, next) => {
   const { filmId } = req.params;
   Movie
-    .findByIdAndRemove(filmId)
+    .findById(filmId)
     .orFail(new NotFoundError({ message: 'фильм не найден' }))
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id.toString()) {
