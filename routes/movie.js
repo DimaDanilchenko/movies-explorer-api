@@ -2,7 +2,7 @@ const router = require('express').Router();
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { celebrate, Joi } = require('celebrate');
 const {
-  getMovies, createMovie, delMovieId,
+  getMovies, createMovie, delCardId,
 } = require('../controllers/movie');
 
 const createMovieValidation = require('../utils/validation/createMovieValidation');
@@ -11,10 +11,10 @@ router.get('/', getMovies);
 
 router.post('/', createMovieValidation, createMovie);
 
-router.delete('/:filmId', celebrate({
+router.delete('/:movieId', celebrate({
   params: Joi.object().keys({
-    filmId: Joi.string().hex().length(24).required(),
+    movieId: Joi.string().hex().length(24).required(),
   }),
-}), delMovieId);
+}), delCardId);
 
 module.exports = router;

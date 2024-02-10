@@ -40,9 +40,9 @@ module.exports.getMovies = (req, res, next) => {
 };
 
 module.exports.delMovieId = (req, res, next) => {
-  const { filmId } = req.params;
+  const { movieId } = req.params;
   Movie
-    .findById(filmId)
+    .findById(movieId)
     .orFail(new NotFoundError({ message: 'фильм не найден' }))
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id.toString()) {
@@ -53,5 +53,11 @@ module.exports.delMovieId = (req, res, next) => {
         .then(() => res.send({ message: 'фильм успешно удален' }))
         .catch((err) => next(err));
     })
+    .catch((err) => next(err));
+};
+
+module.exports.delCardId = (req, res, next) => {
+  Movie.findByIdAndRemove(req.params.movieId)
+    .then((user) => res.send(user))
     .catch((err) => next(err));
 };
